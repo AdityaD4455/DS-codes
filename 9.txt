@@ -1,0 +1,73 @@
+function in C to count the number of nodes in Singly Linked List
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a node in the singly linked list
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Function to count the number of nodes in the linked list
+int countNodes(struct Node* head) {
+    int count = 0;  // Initialize a counter to 0
+    struct Node* current = head;  // Start from the head node
+    
+    // Traverse the linked list
+    while (current != NULL) {
+        count++;  // Increment the counter for each node
+        current = current->next;  // Move to the next node
+    }
+
+    return count;  // Return the total number of nodes
+}
+
+// Function to add a new node at the end of the list
+void append(struct Node** head, int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    // If the list is empty, make the new node the head
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    // Otherwise, traverse to the last node and add the new node
+    struct Node* current = *head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = newNode;
+}
+
+// Function to display the linked list
+void displayList(struct Node* head) {
+    struct Node* current = head;
+    while (current != NULL) {
+        printf("%d -> ", current->data);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    struct Node* head = NULL;  // Initialize an empty list
+
+    // Add some nodes to the list
+    append(&head, 10);
+    append(&head, 20);
+    append(&head, 30);
+    append(&head, 40);
+
+    // Display the linked list
+    printf("Linked List: ");
+    displayList(head);
+
+    // Count the number of nodes in the list
+    int nodeCount = countNodes(head);
+    printf("Number of nodes in the linked list: %d\n", nodeCount);
+
+    return 0;
+}

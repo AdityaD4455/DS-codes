@@ -1,0 +1,96 @@
+Search a node in doubly linked list
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a doubly linked list node
+struct Node {
+    int data;
+    struct Node* next;
+    struct Node* prev;
+};
+
+// Function to search for a node with a given value in the doubly linked list
+struct Node* searchNode(struct Node* head, int value) {
+    struct Node* current = head;  // Start from the head of the list
+
+    // Traverse the list
+    while (current != NULL) {
+        if (current->data == value) {
+            return current;  // If the data matches, return the node
+        }
+        current = current->next;  // Move to the next node
+    }
+
+    return NULL;  // If the value is not found, return NULL
+}
+
+// Function to insert a node at the end of the doubly linked list
+void append(struct Node** head, int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    struct Node* last = *head;
+    
+    newNode->data = value;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    // If the list is empty, make the new node the head
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    // Traverse to the last node and insert the new node at the end
+    while (last->next != NULL) {
+        last = last->next;
+    }
+
+    last->next = newNode;  // Set the next of the last node
+    newNode->prev = last;  // Set the prev of the new node
+}
+
+// Function to display the doubly linked list
+void displayList(struct Node* head) {
+    struct Node* current = head;
+    printf("Doubly Linked List: ");
+    while (current != NULL) {
+        printf("%d <-> ", current->data);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    struct Node* head = NULL;
+
+    // Insert some nodes into the list
+    append(&head, 10);
+    append(&head, 20);
+    append(&head, 30);
+    append(&head, 40);
+
+    // Display the list
+    displayList(head);
+
+    // Search for a node with value 20
+    int searchValue = 20;
+    struct Node* foundNode = searchNode(head, searchValue);
+    
+    if (foundNode != NULL) {
+        printf("Node with value %d found.\n", foundNode->data);
+    } else {
+        printf("Node with value %d not found.\n", searchValue);
+    }
+
+    // Search for a node with value 50 (not in the list)
+    searchValue = 50;
+    foundNode = searchNode(head, searchValue);
+    
+    if (foundNode != NULL) {
+        printf("Node with value %d found.\n", foundNode->data);
+    } else {
+        printf("Node with value %d not found.\n", searchValue);
+    }
+
+    return 0;
+}

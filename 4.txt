@@ -1,0 +1,125 @@
+polynomial addition using  a linked list
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition of a node in the linked list
+struct PolyNode {
+    int coefficient;    // Coefficient of the term
+    int exponent;       // Exponent of the term
+    struct PolyNode* next;
+};
+
+// Function to create a new node
+struct PolyNode* createNode(int coefficient, int exponent) {
+    struct PolyNode* newNode = (struct PolyNode*)malloc(sizeof(struct PolyNode));
+    newNode->coefficient = coefficient;
+    newNode->exponent = exponent;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to insert a node in descending order of exponent
+void insertNode(struct PolyNode** head, int coefficient, int exponent) {
+    struct PolyNode* newNode = createNode(coefficient, exponent);
+    if (*head == NULL || (*head)->exponent < exponent) {
+        newNode->next = *head;
+        *head = newNode;
+    } else {
+        struct PolyNode* temp = *head;
+        while (temp->next != NULL && temp->next->exponent >= exponent) {
+            temp = temp->next;
+        }
+        newNode->next = temp->next;
+        temp->next = newNode;
+    }
+}
+
+// Function to display a polynomial
+void displayPolynomial(struct PolyNode* head) {
+    if (head == NULL) {
+        printf("The polynomial is empty.\n");
+        return;
+    }
+
+    struct PolyNode* temp = head;
+    while (temp != NULL) {
+        if (temp->coefficient > 0 && temp != head) {
+            printf("+");
+        }
+        printf("%dx^%d ", temp->coefficient, temp->exponent);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+// Function to add two polynomials
+struct PolyNode* addPolynomials(struct PolyNode* poly1, struct PolyNode* poly2) {
+    struct PolyNode* result = NULL;
+
+    // Traverse both polynomials and add terms
+    while (poly1 != NULL && poly2 != NULL) {
+        if (poly1->exponent > poly2->exponent) {
+            insertNode(&result, poly1->coefficient, poly1->exponent);
+            poly1 = poly1->next;
+        } else if (poly1->exponent < poly2->exponent) {
+            insertNode(&result, poly2->coefficient, poly2->exponent);
+            poly2 = poly2->next;
+        } else {
+            int sum = poly1->coefficient + poly2->coefficient;
+            if (sum != 0) {
+                insertNode(&result, sum, poly1->exponent);
+            }
+            poly1 = poly1->next;
+            poly2 = poly2->next;
+        }
+    }
+
+    // Add remaining terms of poly1, if any
+    while (poly1 != NULL) {
+        insertNode(&result, poly1->coefficient, poly1->exponent);
+        poly1 = poly1->next;
+    }
+
+    // Add remaining terms of poly2, if any
+    while (poly2 != NULL) {
+        insertNode(&result, poly2->coefficient, poly2->exponent);
+        poly2 = poly2->next;
+    }
+
+    return result;
+}
+
+int main() {
+    struct PolyNode* poly1 = NULL;
+    struct PolyNode* poly2 = NULL;
+
+    // Create the first polynomial: 5x^3 + 3x^2 + 2x + 1
+    insertNode(&poly1, 5, 3);
+    insertNode(&poly1, 3, 2);
+    insertNode(&poly1, 2, 1);
+    insertNode(&poly1, 1, 0);
+
+    // Create the second polynomial: 4x^3 + 2x^2 + 3x + 4
+    insertNode(&poly2, 4, 3);
+    insertNode(&poly2, 2, 2);
+    insertNode(&poly2, 3, 1);
+    insertNode(&poly2, 4, 0);
+
+    // Display the first polynomial
+    printf("First Polynomial: ");
+    displayPolynomial(poly1);
+
+    // Display the second polynomial
+    printf("Second Polynomial: ");
+    displayPolynomial(poly2);
+
+    // Add the two polynomials
+    struct PolyNode* result = addPolynomials(poly1, poly2);
+
+    // Display the result of addition
+    printf("Resultant Polynomial: ");
+    displayPolynomial(result);
+
+    return 0;
+}

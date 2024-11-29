@@ -1,0 +1,91 @@
+function in C for DFS traversal of graph
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_VERTICES 10  // Maximum number of vertices in the graph
+
+// Define a structure for the adjacency list node
+struct Node {
+    int vertex;
+    struct Node* next;
+};
+
+// Define a structure for the graph
+struct Graph {
+    struct Node* adjList[MAX_VERTICES];
+    int visited[MAX_VERTICES];  // Array to track visited vertices
+};
+
+// Function to initialize the graph
+void initGraph(struct Graph* g) {
+    for (int i = 0; i < MAX_VERTICES; i++) {
+        g->adjList[i] = NULL;
+        g->visited[i] = 0;  // Mark all vertices as not visited
+    }
+}
+
+// Function to add an edge to the graph
+void addEdge(struct Graph* g, int src, int dest) {
+    // Add edge from src to dest
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->vertex = dest;
+    newNode->next = g->adjList[src];
+    g->adjList[src] = newNode;
+
+    // For undirected graph, add the reverse edge as well
+    newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->vertex = src;
+    newNode->next = g->adjList[dest];
+    g->adjList[dest] = newNode;
+}
+
+// Recursive function for DFS traversal
+void dfs(struct Graph* g, int vertex) {
+    // Mark the current vertex as visited
+    g->visited[vertex] = 1;
+    printf("%d ", vertex);  // Print the current vertex
+
+    // Visit all adjacent vertices of the current vertex
+    struct Node* temp = g->adjList[vertex];
+    while (temp != NULL) {
+        int adjVertex = temp->vertex;
+        if (!g->visited[adjVertex]) {
+            dfs(g, adjVertex);  // Recur for the adjacent vertex
+        }
+        temp = temp->next;
+    }
+}
+
+// Function to perform DFS for all vertices (to handle disconnected graphs)
+void dfsAll(struct Graph* g) {
+    for (int i = 0; i < MAX_VERTICES; i++) {
+        if (!g->visited[i]) {
+            dfs(g, i);  // Perform DFS for unvisited vertices
+        }
+    }
+}
+
+int main() {
+    struct Graph g;
+    initGraph(&g);
+
+    // Add edges to the graph (undirected graph)
+    addEdge(&g, 0, 1);
+    addEdge(&g, 0, 2);
+    addEdge(&g, 1, 3);
+    addEdge(&g, 2, 4);
+    addEdge(&g, 3, 4);
+
+    // Perform DFS traversal starting from vertex 0
+    printf("DFS Traversal: ");
+    dfs(&g, 0);  // Start DFS from vertex 0
+    printf("\n");
+
+    // If the graph is disconnected, perform DFS from all unvisited vertices
+    printf("DFS Traversal (for disconnected graph): ");
+    dfsAll(&g);  // Handle disconnected graphs
+    printf("\n");
+
+    return 0;
+}
