@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure for CLL
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+// Insert at the end
+void insertEnd(Node **head, int data) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    newNode->data = data;
+
+    if (*head == NULL) {
+        *head = newNode;
+        newNode->next = *head; // Circular link
+    } else {
+        Node *temp = *head;
+        while (temp->next != *head) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+        newNode->next = *head; // Circular link
+    }
+}
+
+// Display the list
+void displayCLL(Node *head) {
+    if (head == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+
+    Node *temp = head;
+    do {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    } while (temp != head);
+    printf("(HEAD)\n");
+}
+
+// Main function for CLL
+int main() {
+    Node *head = NULL;
+
+    insertEnd(&head, 10);
+    insertEnd(&head, 20);
+    insertEnd(&head, 30);
+    displayCLL(head);
+
+    return 0;
+}
